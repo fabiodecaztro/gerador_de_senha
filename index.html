@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gerador de Senhas</h1>
+        <div class="input-group">
+            <label for="tamanho">Quantidade de caracteres:</label>
+            <input type="number" id="tamanho" min="4" max="40" value=""
+                placeholder="Digite a quantidade de caracteres entre 4 e 40 ou Expresso para 15 caracteres.">
+        </div>
+        <div class="button-group">
+            <button onclick="gerarSenha('expresso')">Expresso</button>
+            <button onclick="gerarSenha('completo')">Completo</button>
+            <button onclick="gerarSenha('alfabetico')">Alfabético</button>
+            <button onclick="gerarSenha('alfanumerico')">Alfanumérico</button>
+            <button onclick="gerarSenha('numerico')">Numérico</button>
+        </div>
+        <div id="resultado"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
