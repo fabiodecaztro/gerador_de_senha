@@ -1,5 +1,8 @@
+<!-- Gerador de senhas v3> -->
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +14,6 @@
             box-sizing: border-box;
         }
 
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -22,7 +24,6 @@
             padding: 20px;
         }
 
-
         .container {
             background: white;
             border-radius: 15px;
@@ -32,7 +33,6 @@
             width: 100%;
         }
 
-
         h1 {
             text-align: center;
             color: #333;
@@ -41,11 +41,9 @@
             font-weight: 600;
         }
 
-
         .form-group {
             margin-bottom: 25px;
         }
-
 
         label {
             display: block;
@@ -54,7 +52,6 @@
             font-weight: 500;
             font-size: 1.1em;
         }
-
 
         input[type="number"] {
             width: 100%;
@@ -65,13 +62,11 @@
             transition: border-color 0.3s ease;
         }
 
-
         input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-
 
         .checkbox-group {
             display: grid;
@@ -79,7 +74,6 @@
             gap: 15px;
             margin-top: 10px;
         }
-
 
         .checkbox-item {
             display: flex;
@@ -91,12 +85,10 @@
             cursor: pointer;
         }
 
-
         .checkbox-item:hover {
             background-color: #f8f9fa;
             border-color: #667eea;
         }
-
 
         .checkbox-item input[type="checkbox"] {
             margin-right: 10px;
@@ -104,13 +96,11 @@
             cursor: pointer;
         }
 
-
         .checkbox-item label {
             margin: 0;
             cursor: pointer;
             font-size: 0.95em;
         }
-
 
         .generate-btn {
             width: 100%;
@@ -126,17 +116,14 @@
             margin-top: 20px;
         }
 
-
         .generate-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-
         .generate-btn:active {
             transform: translateY(0);
         }
-
 
         .result-area {
             margin-top: 30px;
@@ -148,7 +135,6 @@
             max-height: 300px;
             overflow-y: auto;
         }
-
 
         .password-item {
             background: white;
@@ -162,11 +148,9 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-
         .password-item:last-child {
             margin-bottom: 0;
         }
-
 
         .error-message {
             background-color: #fee;
@@ -178,7 +162,6 @@
             font-weight: 500;
         }
 
-
         .success-message {
             background-color: #efe;
             color: #363;
@@ -189,18 +172,15 @@
             font-weight: 500;
         }
 
-
         @media (max-width: 600px) {
             .container {
                 padding: 25px;
                 margin: 10px;
             }
 
-
             .checkbox-group {
                 grid-template-columns: 1fr;
             }
-
 
             h1 {
                 font-size: 1.8em;
@@ -208,22 +188,20 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Gerador de Senhas</h1>
-       
+
         <div class="form-group">
             <label for="passwordCount">Quantidade de Senhas:</label>
-            <!-- <input type="number" id="passwordCount" min="1" max="20" value="1"> -->
             <input type="number" id="passwordCount" min="1" max="200" value="1">
         </div>
-
 
         <div class="form-group">
             <label for="passwordLength">Quantidade de Caracteres:</label>
             <input type="number" id="passwordLength" min="4" max="50" value="12">
         </div>
-
 
         <div class="form-group">
             <label>Tipos de Caracteres:</label>
@@ -247,132 +225,111 @@
             </div>
         </div>
 
-
         <button class="generate-btn" onclick="generatePasswords()">Gerar Senhas</button>
-
 
         <div class="result-area" id="resultArea">
             <p style="color: #666; text-align: center; margin-top: 40px;">As senhas geradas aparecerão aqui...</p>
         </div>
     </div>
 
-
     <script>
         function generatePasswords() {
-            // Obter valores dos campos
             const passwordCount = parseInt(document.getElementById('passwordCount').value) || 1;
             const passwordLength = parseInt(document.getElementById('passwordLength').value) || 12;
-           
-            // Obter tipos de caracteres selecionados
+
             const includeNumbers = document.getElementById('includeNumbers').checked;
             const includeSpecial = document.getElementById('includeSpecial').checked;
             const includeUppercase = document.getElementById('includeUppercase').checked;
             const includeLowercase = document.getElementById('includeLowercase').checked;
-           
+
             const resultArea = document.getElementById('resultArea');
-           
-            // Validações
+
             if (passwordLength < 4 || passwordLength > 50) {
                 resultArea.innerHTML = '<div class="error-message">A quantidade de caracteres deve ser entre 4 e 50.</div>';
                 return;
             }
-           
-            if (!includeNumbers && !includeSpecial && !includeUppercase && !includeLowercase) {
+
+            if (passwordCount < 1 || passwordCount > 200) {
+                resultArea.innerHTML = '<div class="error-message">A quantidade de senhas deve ser entre 1 e 200.</div>';
+                return;
+            }
+
+            const selectedTypes = [];
+            if (includeNumbers) selectedTypes.push({ chars: '0123456789', name: 'numbers' });
+            if (includeSpecial) selectedTypes.push({ chars: '!@#$%^&*', name: 'special' });
+            if (includeUppercase) selectedTypes.push({ chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', name: 'uppercase' });
+            if (includeLowercase) selectedTypes.push({ chars: 'abcdefghijklmnopqrstuvwxyz', name: 'lowercase' });
+
+            if (selectedTypes.length === 0) {
                 resultArea.innerHTML = '<div class="error-message">Por favor, selecione pelo menos um tipo de caractere.</div>';
                 return;
             }
-           
-            // Definir conjuntos de caracteres
-            const numbers = '0123456789';
-            const special = '!@#$%^&*';
-            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-           
-            // Criar array de tipos selecionados
-            const selectedTypes = [];
-            if (includeNumbers) selectedTypes.push({ chars: numbers, name: 'numbers' });
-            if (includeSpecial) selectedTypes.push({ chars: special, name: 'special' });
-            if (includeUppercase) selectedTypes.push({ chars: uppercase, name: 'uppercase' });
-            if (includeLowercase) selectedTypes.push({ chars: lowercase, name: 'lowercase' });
-           
-            // Gerar senhas
+
+            // REMOVIDA A VALIDAÇÃO DE DIVISIBILIDADE EXATA, AGORA LIDAMOS COM O RESTO.
+
             const passwords = [];
-           
+
             for (let i = 0; i < passwordCount; i++) {
                 passwords.push(generateSinglePassword(passwordLength, selectedTypes));
             }
-           
-            // Exibir resultados
+
             displayPasswords(passwords);
         }
-       
+
         function generateSinglePassword(length, selectedTypes) {
-            let password = '';
-            const allChars = selectedTypes.map(type => type.chars).join('');
-           
-            // Garantir que pelo menos um caractere de cada tipo selecionado seja incluído
-            const guaranteedChars = [];
+            let passwordChars = [];
+            const numTypes = selectedTypes.length;
+
+            // Calcula a base de caracteres por tipo
+            let charsPerType = Math.floor(length / numTypes);
+            let remainder = length % numTypes; // Calcula o resto da divisão
+
+            // Primeiro, adiciona a quantidade base de caracteres para cada tipo
             selectedTypes.forEach(type => {
-                const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
-                guaranteedChars.push(randomChar);
+                for (let i = 0; i < charsPerType; i++) {
+                    const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
+                    passwordChars.push(randomChar);
+                }
             });
-           
-            // Preencher o restante da senha
-            const remainingLength = length - guaranteedChars.length;
-            const randomChars = [];
-           
-            for (let i = 0; i < remainingLength; i++) {
-                const randomChar = allChars[Math.floor(Math.random() * allChars.length)];
-                randomChars.push(randomChar);
+
+            // Distribui os caracteres restantes aleatoriamente entre os tipos
+            // Isso garante que a senha terá o comprimento exato e que o "resto" será preenchido
+            for (let i = 0; i < remainder; i++) {
+                const randomTypeIndex = Math.floor(Math.random() * numTypes); // Escolhe um tipo aleatoriamente
+                const type = selectedTypes[randomTypeIndex];
+                const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
+                passwordChars.push(randomChar);
             }
-           
-            // Combinar e embaralhar todos os caracteres
-            const allPasswordChars = [...guaranteedChars, ...randomChars];
-           
-            // Embaralhar usando algoritmo Fisher-Yates
-            for (let i = allPasswordChars.length - 1; i > 0; i--) {
+
+            // Embaralhar usando algoritmo Fisher-Yates para garantir aleatoriedade na posição
+            for (let i = passwordChars.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [allPasswordChars[i], allPasswordChars[j]] = [allPasswordChars[j], allPasswordChars[i]];
+                [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
             }
-           
-            return allPasswordChars.join('');
+
+            return passwordChars.join('');
         }
-       
+
         function displayPasswords(passwords) {
             const resultArea = document.getElementById('resultArea');
-           
+
             let html = `<div class="success-message">✓ ${passwords.length} senha${passwords.length > 1 ? 's' : ''} gerada${passwords.length > 1 ? 's' : ''} com sucesso!</div>`;
-           
+
             passwords.forEach((password, index) => {
-                // html += `<div class="password-item">Senha ${index + 1}: ${password}</div>`;
                 html += `<div class="password-item">${password}</div>`;
             });
-           
+
             resultArea.innerHTML = html;
         }
-       
-        // Adicionar eventos para melhorar a experiência do usuário
-        document.addEventListener('DOMContentLoaded', function() {
-            // Permitir gerar senhas pressionando Enter
-            document.addEventListener('keypress', function(e) {
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     generatePasswords();
                 }
             });
-           
-            // Limitar valores dos campos numéricos
-            document.getElementById('passwordCount').addEventListener('input', function() {
-                // if (this.value > 20) this.value = 20;
-                if (this.value > 200) this.value = 200;
-                if (this.value < 1) this.value = 1;
-            });
-           
-            document.getElementById('passwordLength').addEventListener('input', function() {
-                if (this.value > 50) this.value = 50;
-                if (this.value < 4) this.value = 4;
-            });
         });
     </script>
 </body>
-</html>
 
+</html>
