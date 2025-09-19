@@ -1,4 +1,4 @@
-<!-- Gerador de senhas v3> -->
+<!-- Gerador de senhas v4 - Versão modificada para gerar apenas uma senha com funcionalidade de transferência -->
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -8,12 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Senhas</title>
     <style>
+        /* Estilos gerais - Reset e configurações básicas */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Estilo do corpo da página - Gradiente de fundo e centralização */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -24,6 +26,7 @@
             padding: 20px;
         }
 
+        /* Container principal - Cartão branco centralizado */
         .container {
             background: white;
             border-radius: 15px;
@@ -33,6 +36,7 @@
             width: 100%;
         }
 
+        /* Título principal */
         h1 {
             text-align: center;
             color: #333;
@@ -41,10 +45,12 @@
             font-weight: 600;
         }
 
+        /* Grupos de formulário - Espaçamento entre elementos */
         .form-group {
             margin-bottom: 25px;
         }
 
+        /* Labels dos campos de entrada */
         label {
             display: block;
             margin-bottom: 8px;
@@ -53,6 +59,7 @@
             font-size: 1.1em;
         }
 
+        /* Campo de entrada numérico - Estilo do input de quantidade de caracteres */
         input[type="number"] {
             width: 100%;
             padding: 12px 15px;
@@ -62,12 +69,14 @@
             transition: border-color 0.3s ease;
         }
 
+        /* Estado de foco do campo numérico */
         input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        /* Grid de checkboxes - Layout em duas colunas */
         .checkbox-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -75,6 +84,7 @@
             margin-top: 10px;
         }
 
+        /* Item individual de checkbox - Estilo de cada opção */
         .checkbox-item {
             display: flex;
             align-items: center;
@@ -85,23 +95,27 @@
             cursor: pointer;
         }
 
+        /* Efeito hover nos itens de checkbox */
         .checkbox-item:hover {
             background-color: #f8f9fa;
             border-color: #667eea;
         }
 
+        /* Estilo dos checkboxes */
         .checkbox-item input[type="checkbox"] {
             margin-right: 10px;
             transform: scale(1.2);
             cursor: pointer;
         }
 
+        /* Labels dos checkboxes */
         .checkbox-item label {
             margin: 0;
             cursor: pointer;
             font-size: 0.95em;
         }
 
+        /* Botão de gerar senha - Estilo principal */
         .generate-btn {
             width: 100%;
             padding: 15px;
@@ -116,15 +130,18 @@
             margin-top: 20px;
         }
 
+        /* Efeito hover do botão de gerar */
         .generate-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
+        /* Efeito de clique do botão */
         .generate-btn:active {
             transform: translateY(0);
         }
 
+        /* Área de resultado - Container para exibir a senha gerada */
         .result-area {
             margin-top: 30px;
             padding: 20px;
@@ -132,26 +149,48 @@
             border-radius: 8px;
             border: 2px solid #e1e5e9;
             min-height: 120px;
-            max-height: 300px;
-            overflow-y: auto;
         }
 
+        /* Item de senha individual - Estilo da senha exibida */
         .password-item {
             background: white;
-            padding: 12px 15px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
             border-radius: 6px;
             border-left: 4px solid #667eea;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 16px;
             word-break: break-all;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .password-item:last-child {
-            margin-bottom: 0;
+        /* Adicionado botão de copiar para a área de transferência */
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+            flex-shrink: 0;
         }
 
+        .copy-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .copy-btn:active {
+            background: #4c63d2;
+        }
+
+        /* Mensagem de erro - Estilo para erros de validação */
         .error-message {
             background-color: #fee;
             color: #c33;
@@ -162,6 +201,7 @@
             font-weight: 500;
         }
 
+        /* Mensagem de sucesso - Confirmação de senha gerada */
         .success-message {
             background-color: #efe;
             color: #363;
@@ -172,6 +212,23 @@
             font-weight: 500;
         }
 
+        /* Adicionado estilo para mensagem de cópia */
+        .copy-message {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-message.show {
+            opacity: 1;
+        }
+
+        /* Responsividade - Adaptação para dispositivos móveis */
         @media (max-width: 600px) {
             .container {
                 padding: 25px;
@@ -185,6 +242,18 @@
             h1 {
                 font-size: 1.8em;
             }
+
+            /* Ajuste do layout da senha em dispositivos móveis */
+            .password-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .copy-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: stretch;
+            }
         }
     </style>
 </head>
@@ -193,16 +262,15 @@
     <div class="container">
         <h1>Gerador de Senhas</h1>
 
-        <div class="form-group">
-            <label for="passwordCount">Quantidade de Senhas:</label>
-            <input type="number" id="passwordCount" min="1" max="200" value="1">
-        </div>
+        <!-- Removido o campo de quantidade de senhas conforme solicitado -->
 
+        <!-- Campo para definir o comprimento da senha -->
         <div class="form-group">
             <label for="passwordLength">Quantidade de Caracteres:</label>
             <input type="number" id="passwordLength" min="4" max="50" value="12">
         </div>
 
+        <!-- Opções de tipos de caracteres para incluir na senha -->
         <div class="form-group">
             <label>Tipos de Caracteres:</label>
             <div class="checkbox-group">
@@ -225,66 +293,63 @@
             </div>
         </div>
 
-        <button class="generate-btn" onclick="generatePasswords()">Gerar Senhas</button>
+        <!-- Botão para gerar a senha -->
+        <button class="generate-btn" onclick="generatePassword()">Gerar Senha</button>
 
+        <!-- Área onde a senha gerada será exibida -->
         <div class="result-area" id="resultArea">
-            <p style="color: #666; text-align: center; margin-top: 40px;">As senhas geradas aparecerão aqui...</p>
+            <p style="color: #666; text-align: center; margin-top: 40px;">A senha gerada aparecerá aqui...</p>
         </div>
     </div>
 
     <script>
-        function generatePasswords() {
-            const passwordCount = parseInt(document.getElementById('passwordCount').value) || 1;
+        // Função principal para gerar uma única senha
+        function generatePassword() {
+            // Obtém o comprimento desejado da senha
             const passwordLength = parseInt(document.getElementById('passwordLength').value) || 12;
 
+            // Verifica quais tipos de caracteres foram selecionados
             const includeNumbers = document.getElementById('includeNumbers').checked;
             const includeSpecial = document.getElementById('includeSpecial').checked;
             const includeUppercase = document.getElementById('includeUppercase').checked;
             const includeLowercase = document.getElementById('includeLowercase').checked;
 
+            // Referência para a área onde o resultado será exibido
             const resultArea = document.getElementById('resultArea');
 
+            // Validação do comprimento da senha
             if (passwordLength < 4 || passwordLength > 50) {
                 resultArea.innerHTML = '<div class="error-message">A quantidade de caracteres deve ser entre 4 e 50.</div>';
                 return;
             }
 
-            if (passwordCount < 1 || passwordCount > 200) {
-                resultArea.innerHTML = '<div class="error-message">A quantidade de senhas deve ser entre 1 e 200.</div>';
-                return;
-            }
-
+            // Monta array com os tipos de caracteres selecionados
             const selectedTypes = [];
             if (includeNumbers) selectedTypes.push({ chars: '0123456789', name: 'numbers' });
             if (includeSpecial) selectedTypes.push({ chars: '!@#$%^&*', name: 'special' });
             if (includeUppercase) selectedTypes.push({ chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', name: 'uppercase' });
             if (includeLowercase) selectedTypes.push({ chars: 'abcdefghijklmnopqrstuvwxyz', name: 'lowercase' });
 
+            // Validação: pelo menos um tipo deve ser selecionado
             if (selectedTypes.length === 0) {
                 resultArea.innerHTML = '<div class="error-message">Por favor, selecione pelo menos um tipo de caractere.</div>';
                 return;
             }
 
-            // REMOVIDA A VALIDAÇÃO DE DIVISIBILIDADE EXATA, AGORA LIDAMOS COM O RESTO.
-
-            const passwords = [];
-
-            for (let i = 0; i < passwordCount; i++) {
-                passwords.push(generateSinglePassword(passwordLength, selectedTypes));
-            }
-
-            displayPasswords(passwords);
+            const password = generateSinglePassword(passwordLength, selectedTypes);
+            displayPassword(password);
         }
 
+        // Função para gerar uma senha individual com base nos parâmetros
         function generateSinglePassword(length, selectedTypes) {
             let passwordChars = [];
             const numTypes = selectedTypes.length;
 
-            // Calcula a base de caracteres por tipo
+            // Calcula quantos caracteres de cada tipo incluir
             let charsPerType = Math.floor(length / numTypes);
-            let remainder = length % numTypes; // Calcula o resto da divisão
+            let remainder = length % numTypes; // Resto da divisão para distribuir caracteres extras
 
-            // Primeiro, adiciona a quantidade base de caracteres para cada tipo
+            // Adiciona a quantidade base de caracteres para cada tipo selecionado
             selectedTypes.forEach(type => {
                 for (let i = 0; i < charsPerType; i++) {
                     const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
@@ -293,15 +358,15 @@
             });
 
             // Distribui os caracteres restantes aleatoriamente entre os tipos
-            // Isso garante que a senha terá o comprimento exato e que o "resto" será preenchido
+            // Isso garante que a senha tenha o comprimento exato solicitado
             for (let i = 0; i < remainder; i++) {
-                const randomTypeIndex = Math.floor(Math.random() * numTypes); // Escolhe um tipo aleatoriamente
+                const randomTypeIndex = Math.floor(Math.random() * numTypes);
                 const type = selectedTypes[randomTypeIndex];
                 const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
                 passwordChars.push(randomChar);
             }
 
-            // Embaralhar usando algoritmo Fisher-Yates para garantir aleatoriedade na posição
+            // Embaralha os caracteres usando algoritmo Fisher-Yates para garantir aleatoriedade
             for (let i = passwordChars.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
@@ -310,22 +375,73 @@
             return passwordChars.join('');
         }
 
-        function displayPasswords(passwords) {
+        function displayPassword(password) {
             const resultArea = document.getElementById('resultArea');
 
-            let html = `<div class="success-message">✓ ${passwords.length} senha${passwords.length > 1 ? 's' : ''} gerada${passwords.length > 1 ? 's' : ''} com sucesso!</div>`;
-
-            passwords.forEach((password, index) => {
-                html += `<div class="password-item">${password}</div>`;
-            });
+            // Cria o HTML com a senha e botão de copiar
+            let html = `<div class="success-message">✓ Senha gerada com sucesso!</div>`;
+            html += `<div class="password-item">
+                        <span>${password}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${password}', this)">Copiar</button>
+                     </div>`;
 
             resultArea.innerHTML = html;
         }
 
+        function copyToClipboard(password, buttonElement) {
+            // Usa a API moderna do navegador para copiar texto
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(password).then(() => {
+                    showCopyFeedback(buttonElement, 'Copiado!');
+                }).catch(() => {
+                    // Fallback caso a API moderna falhe
+                    fallbackCopyToClipboard(password, buttonElement);
+                });
+            } else {
+                // Método alternativo para navegadores mais antigos
+                fallbackCopyToClipboard(password, buttonElement);
+            }
+        }
+
+        // Método alternativo para copiar texto (compatibilidade com navegadores antigos)
+        function fallbackCopyToClipboard(password, buttonElement) {
+            const textArea = document.createElement('textarea');
+            textArea.value = password;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopyFeedback(buttonElement, 'Copiado!');
+            } catch (err) {
+                showCopyFeedback(buttonElement, 'Erro ao copiar');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Exibe feedback visual quando a senha é copiada
+        function showCopyFeedback(buttonElement, message) {
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = message;
+            buttonElement.style.background = '#4caf50';
+            
+            // Restaura o estado original do botão após 2 segundos
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+                buttonElement.style.background = '#667eea';
+            }, 2000);
+        }
+
+        // Event listener para permitir gerar senha pressionando Enter
         document.addEventListener('DOMContentLoaded', function () {
             document.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
-                    generatePasswords();
+                    generatePassword();
                 }
             });
         });
