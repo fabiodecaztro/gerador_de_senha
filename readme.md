@@ -31,6 +31,6 @@ Sinta-se à vontade para abrir issues ou enviar pull requests com melhorias, cor
 
 ---
 
-## Desenvolvidor
+## Desenvolvedor
 
 Fabio Castro
