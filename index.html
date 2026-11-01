@@ -267,7 +267,7 @@
         <!-- Campo para definir o comprimento da senha -->
         <div class="form-group">
             <label for="passwordLength">Quantidade de Caracteres:</label>
-            <input type="number" id="passwordLength" min="4" max="50" value="20">
+            <input type="number" id="passwordLength" min="4" max="50" value="12">
         </div>
 
         <!-- Opções de tipos de caracteres para incluir na senha -->
@@ -306,7 +306,7 @@
         // Função principal para gerar uma única senha
         function generatePassword() {
             // Obtém o comprimento desejado da senha
-            const passwordLength = parseInt(document.getElementById('passwordLength').value) || 20;
+            const passwordLength = parseInt(document.getElementById('passwordLength').value) || 12;
 
             // Verifica quais tipos de caracteres foram selecionados
             const includeNumbers = document.getElementById('includeNumbers').checked;
