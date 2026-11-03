@@ -1,4 +1,4 @@
-<!-- Gerador de senhas v4 - Versão modificada para gerar apenas uma senha com funcionalidade de transferência -->
+<!-- Gerador de senhas v5 - Versão sem repetição de caracteres -->
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -212,22 +212,6 @@
             font-weight: 500;
         }
 
-        /* Adicionado estilo para mensagem de cópia */
-        .copy-message {
-            background-color: #e3f2fd;
-            color: #1976d2;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-top: 5px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .copy-message.show {
-            opacity: 1;
-        }
-
         /* Responsividade - Adaptação para dispositivos móveis */
         @media (max-width: 600px) {
             .container {
@@ -243,7 +227,6 @@
                 font-size: 1.8em;
             }
 
-            /* Ajuste do layout da senha em dispositivos móveis */
             .password-item {
                 flex-direction: column;
                 align-items: flex-start;
@@ -261,8 +244,6 @@
 <body>
     <div class="container">
         <h1>Gerador de Senhas</h1>
-
-        <!-- Removido o campo de quantidade de senhas conforme solicitado -->
 
         <!-- Campo para definir o comprimento da senha -->
         <div class="form-group">
@@ -303,70 +284,64 @@
     </div>
 
     <script>
-        // Função principal para gerar uma única senha
         function generatePassword() {
-            // Obtém o comprimento desejado da senha
             const passwordLength = parseInt(document.getElementById('passwordLength').value) || 12;
 
-            // Verifica quais tipos de caracteres foram selecionados
             const includeNumbers = document.getElementById('includeNumbers').checked;
             const includeSpecial = document.getElementById('includeSpecial').checked;
             const includeUppercase = document.getElementById('includeUppercase').checked;
             const includeLowercase = document.getElementById('includeLowercase').checked;
 
-            // Referência para a área onde o resultado será exibido
             const resultArea = document.getElementById('resultArea');
 
-            // Validação do comprimento da senha
             if (passwordLength < 4 || passwordLength > 50) {
                 resultArea.innerHTML = '<div class="error-message">A quantidade de caracteres deve ser entre 4 e 50.</div>';
                 return;
             }
 
-            // Monta array com os tipos de caracteres selecionados
-            const selectedTypes = [];
-            if (includeNumbers) selectedTypes.push({ chars: '0123456789', name: 'numbers' });
-            if (includeSpecial) selectedTypes.push({ chars: '!@#$%^&*', name: 'special' });
-            if (includeUppercase) selectedTypes.push({ chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', name: 'uppercase' });
-            if (includeLowercase) selectedTypes.push({ chars: 'abcdefghijklmnopqrstuvwxyz', name: 'lowercase' });
+            const charSets = {
+                numbers: '0123456789',
+                special: '!@#$%^&*',
+                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lowercase: 'abcdefghijklmnopqrstuvwxyz'
+            };
 
-            // Validação: pelo menos um tipo deve ser selecionado
-            if (selectedTypes.length === 0) {
+            let selectedChars = '';
+            if (includeNumbers) selectedChars += charSets.numbers;
+            if (includeSpecial) selectedChars += charSets.special;
+            if (includeUppercase) selectedChars += charSets.uppercase;
+            if (includeLowercase) selectedChars += charSets.lowercase;
+
+            if (selectedChars.length === 0) {
                 resultArea.innerHTML = '<div class="error-message">Por favor, selecione pelo menos um tipo de caractere.</div>';
                 return;
             }
 
-            const password = generateSinglePassword(passwordLength, selectedTypes);
+            // Validação crucial: o tamanho pedido não pode ser maior que o total de caracteres disponíveis sem repetição
+            if (passwordLength > selectedChars.length) {
+                resultArea.innerHTML = `<div class="error-message">Com as opções selecionadas, o máximo de caracteres únicos possíveis é ${selectedChars.length}.</div>`;
+                return;
+            }
+
+            const password = generateUniquePassword(passwordLength, selectedChars);
             displayPassword(password);
         }
 
-        // Função para gerar uma senha individual com base nos parâmetros
-        function generateSinglePassword(length, selectedTypes) {
+        // Função para gerar senha garantindo caracteres únicos
+        function generateUniquePassword(length, availableChars) {
+            let charArray = availableChars.split('');
             let passwordChars = [];
-            const numTypes = selectedTypes.length;
 
-            // Calcula quantos caracteres de cada tipo incluir
-            let charsPerType = Math.floor(length / numTypes);
-            let remainder = length % numTypes; // Resto da divisão para distribuir caracteres extras
-
-            // Adiciona a quantidade base de caracteres para cada tipo selecionado
-            selectedTypes.forEach(type => {
-                for (let i = 0; i < charsPerType; i++) {
-                    const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
-                    passwordChars.push(randomChar);
-                }
-            });
-
-            // Distribui os caracteres restantes aleatoriamente entre os tipos
-            // Isso garante que a senha tenha o comprimento exato solicitado
-            for (let i = 0; i < remainder; i++) {
-                const randomTypeIndex = Math.floor(Math.random() * numTypes);
-                const type = selectedTypes[randomTypeIndex];
-                const randomChar = type.chars[Math.floor(Math.random() * type.chars.length)];
-                passwordChars.push(randomChar);
+            // Embaralha o pool completo de caracteres disponíveis (Fisher-Yates)
+            for (let i = charArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [charArray[i], charArray[j]] = [charArray[j], charArray[i]];
             }
 
-            // Embaralha os caracteres usando algoritmo Fisher-Yates para garantir aleatoriedade
+            // Pega exatamente a quantidade 'length' do início do array embaralhado (garantindo sem repetição)
+            passwordChars = charArray.slice(0, length);
+
+            // Re-embaralha o resultado final para que a ordem dos tipos fique totalmente aleatória
             for (let i = passwordChars.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
@@ -378,7 +353,6 @@
         function displayPassword(password) {
             const resultArea = document.getElementById('resultArea');
 
-            // Cria o HTML com a senha e botão de copiar
             let html = `<div class="success-message">✓ Senha gerada com sucesso!</div>`;
             html += `<div class="password-item">
                         <span>${password}</span>
@@ -389,21 +363,17 @@
         }
 
         function copyToClipboard(password, buttonElement) {
-            // Usa a API moderna do navegador para copiar texto
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(password).then(() => {
                     showCopyFeedback(buttonElement, 'Copiado!');
                 }).catch(() => {
-                    // Fallback caso a API moderna falhe
                     fallbackCopyToClipboard(password, buttonElement);
                 });
             } else {
-                // Método alternativo para navegadores mais antigos
                 fallbackCopyToClipboard(password, buttonElement);
             }
         }
 
-        // Método alternativo para copiar texto (compatibilidade com navegadores antigos)
         function fallbackCopyToClipboard(password, buttonElement) {
             const textArea = document.createElement('textarea');
             textArea.value = password;
@@ -424,20 +394,17 @@
             document.body.removeChild(textArea);
         }
 
-        // Exibe feedback visual quando a senha é copiada
         function showCopyFeedback(buttonElement, message) {
             const originalText = buttonElement.textContent;
             buttonElement.textContent = message;
             buttonElement.style.background = '#4caf50';
             
-            // Restaura o estado original do botão após 2 segundos
             setTimeout(() => {
                 buttonElement.textContent = originalText;
                 buttonElement.style.background = '#667eea';
             }, 2000);
         }
 
-        // Event listener para permitir gerar senha pressionando Enter
         document.addEventListener('DOMContentLoaded', function () {
             document.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
