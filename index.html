@@ -1,4 +1,4 @@
-<!-- Gerador de senhas v5 - Versão sem repetição de caracteres -->
+<!-- Gerador de senhas v6 - Com distribuição equitativa por categoria e sem repetição -->
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas v5</title>
+    <title>Gerador de Senhas v5.1</title>
     <style>
         /* Estilos gerais - Reset e configurações básicas */
         * {
@@ -299,49 +299,80 @@
                 return;
             }
 
-            const charSets = {
-                numbers: '0123456789',
-                special: '!@#$%^&*',
-                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                lowercase: 'abcdefghijklmnopqrstuvwxyz'
-            };
+            // Monta array com os tipos selecionados e seus respectivos pools
+            const selectedTypes = [];
+            if (includeNumbers) selectedTypes.push({ chars: '0123456789', name: 'numbers' });
+            if (includeSpecial) selectedTypes.push({ chars: '!@#$%^&*', name: 'special' });
+            if (includeUppercase) selectedTypes.push({ chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', name: 'uppercase' });
+            if (includeLowercase) selectedTypes.push({ chars: 'abcdefghijklmnopqrstuvwxyz', name: 'lowercase' });
 
-            let selectedChars = '';
-            if (includeNumbers) selectedChars += charSets.numbers;
-            if (includeSpecial) selectedChars += charSets.special;
-            if (includeUppercase) selectedChars += charSets.uppercase;
-            if (includeLowercase) selectedChars += charSets.lowercase;
-
-            if (selectedChars.length === 0) {
+            if (selectedTypes.length === 0) {
                 resultArea.innerHTML = '<div class="error-message">Por favor, selecione pelo menos um tipo de caractere.</div>';
                 return;
             }
 
-            // Validação crucial: o tamanho pedido não pode ser maior que o total de caracteres disponíveis sem repetição
-            if (passwordLength > selectedChars.length) {
-                resultArea.innerHTML = `<div class="error-message">Com as opções selecionadas, o máximo de caracteres únicos possíveis é ${selectedChars.length}.</div>`;
+            // Validação: cada tipo selecionado precisa ter caracteres suficientes para a cota base
+            const baseCountPerType = Math.floor(passwordLength / selectedTypes.length);
+            if (baseCountPerType === 0) {
+                resultArea.innerHTML = `<div class="error-message">A quantidade de caracteres (${passwordLength}) é muito pequena para os ${selectedTypes.length} tipos selecionados. Aumente o tamanho da senha.</div>`;
                 return;
             }
 
-            const password = generateUniquePassword(passwordLength, selectedChars);
+            for (const type of selectedTypes) {
+                if (baseCountPerType > type.chars.length) {
+                    resultArea.innerHTML = `<div class="error-message">Cada tipo precisa de pelo menos ${baseCountPerType} caracteres únicos, mas a categoria selecionada possui apenas ${type.chars.length}.</div>`;
+                    return;
+                }
+            }
+
+            const password = generateEquitableUniquePassword(passwordLength, selectedTypes);
             displayPassword(password);
         }
 
-        // Função para gerar senha garantindo caracteres únicos
-        function generateUniquePassword(length, availableChars) {
-            let charArray = availableChars.split('');
+        // Função para garantir distribuição equitativa por categoria sem repetir caracteres internos
+        function generateEquitableUniquePassword(length, selectedTypes) {
             let passwordChars = [];
+            const numTypes = selectedTypes.length;
+            const baseCount = Math.floor(length / numTypes);
+            let remainder = length % numTypes;
 
-            // Embaralha o pool completo de caracteres disponíveis (Fisher-Yates)
-            for (let i = charArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [charArray[i], charArray[j]] = [charArray[j], charArray[i]];
+            // Controla quais caracteres já foram usados globalmente na senha para garantir unicidade total
+            let usedChars = new Set();
+
+            // Função auxiliar para pegar N caracteres únicos de um pool específico
+            function getUniqueCharsFromPool(pool, count) {
+                let available = pool.split('').filter(c => !usedChars.has(c));
+                // Embaralha o pool disponível
+                for (let i = available.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [available[i], available[j]] = [available[j], available[i]];
+                }
+                let chosen = available.slice(0, count);
+                chosen.forEach(c => usedChars.add(c));
+                return chosen;
             }
 
-            // Pega exatamente a quantidade 'length' do início do array embaralhado (garantindo sem repetição)
-            passwordChars = charArray.slice(0, length);
+            // 1. Distribui a quantidade base igualitária para cada tipo
+            selectedTypes.forEach(type => {
+                let charsFromThisType = getUniqueCharsFromPool(type.chars, baseCount);
+                passwordChars.push(...charsFromThisType);
+            });
 
-            // Re-embaralha o resultado final para que a ordem dos tipos fique totalmente aleatória
+            // 2. Distribui o resto aleatoriamente entre os tipos disponíveis
+            // Sorteia quais tipos ganham 1 unidade a mais do resto
+            let shuffledTypesForRemainder = [...selectedTypes];
+            for (let i = shuffledTypesForRemainder.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledTypesForRemainder[i], shuffledTypesForRemainder[j]] = [shuffledTypesForRemainder[j], shuffledTypesForRemainder[i]];
+            }
+
+            for (let i = 0; i < remainder; i++) {
+                let targetType = shuffledTypesForRemainder[i];
+                let extraChar = getUniqueCharsFromPool(targetType.chars, 1);
+                passwordChars.push(...extraChar);
+            }
+
+            // 3. Embaralha o resultado final usando Fisher-Yates para misturar a ordem dos tipos na senha
             for (let i = passwordChars.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
