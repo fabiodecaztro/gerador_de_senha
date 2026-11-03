@@ -12,7 +12,7 @@ Este projeto é uma aplicação web interativa para gerar senhas seguras com bas
   - Letras maiúsculas (`A-Z`)
   - Letras minúsculas (`a-z`)
 - **Validação Inteligente:** Alerta o usuário caso a quantidade de caracteres solicitada exceda o total de caracteres únicos disponíveis nos tipos selecionados.
-- **Copiar para a Área de Transferência:** Botão integrado com suporte a navegadores modernos e fallback para compatibilidade em dispositivos mais antigos.
+- **Copiar para a Área de Transferência:** A senha é copiada automaticamente ao ser gerada. O botão integrado também permite copiá-la novamente, com suporte a navegadores modernos e fallback para compatibilidade em dispositivos mais antigos.
 - **Atalho de Teclado:** Pressionar `Enter` aciona o gerador de senhas.
 - **Design Responsivo:** Layout intuitivo e adaptável para telas de desktops e dispositivos móveis.
 
@@ -28,7 +28,7 @@ Este projeto é uma aplicação web interativa para gerar senhas seguras com bas
 2. Defina a quantidade de caracteres desejada para a senha.
 3. Marque os tipos de caracteres que prefere utilizar.
 4. Clique no botão **Gerar Senha** (ou pressione **Enter**).
-5. Clique no botão **Copiar** para transferir a senha diretamente para a sua área de transferência.
+5. A senha é copiada automaticamente; se precisar, clique no botão **Copiar** para copiá-la novamente.
 
 ---
 

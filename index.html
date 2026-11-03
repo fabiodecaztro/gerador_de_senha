@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Senhas v5.1</title>
+    <title>Gerador de Senhas v5.2</title>
     <style>
         /* Estilos gerais - Reset e configurações básicas */
         * {
@@ -391,6 +391,7 @@
                      </div>`;
 
             resultArea.innerHTML = html;
+            copyToClipboard(password, resultArea.querySelector('.copy-btn'));
         }
 
         function copyToClipboard(password, buttonElement) {
@@ -414,15 +415,16 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
+
             try {
-                document.execCommand('copy');
-                showCopyFeedback(buttonElement, 'Copiado!');
+                const copied = document.execCommand('copy');
+                showCopyFeedback(buttonElement, copied ? 'Copiado!' : 'Erro ao copiar');
             } catch (err) {
                 showCopyFeedback(buttonElement, 'Erro ao copiar');
+            } finally {
+                document.body.removeChild(textArea);
             }
-            
-            document.body.removeChild(textArea);
+
         }
 
         function showCopyFeedback(buttonElement, message) {
