@@ -1,36 +1,37 @@
 # Gerador de Senhas
 
-Este projeto é uma aplicação web simples para gerar senhas seguras com base em critérios personalizados definidos pelo usuário.
+Este projeto é uma aplicação web interativa para gerar senhas seguras com base em critérios personalizados definidos pelo usuário, agora garantindo a criação de senhas **sem repetição de caracteres**.
 
-## Funcionalidades
+## 🚀 Funcionalidades
 
-- Escolha da **quantidade de caracteres** da senha.
-- Seleção dos **tipos de caracteres** que podem ser incluídos:
+- **Geração Sem Repetição:** Garante que a senha gerada contenha apenas caracteres únicos (sem duplicadas).
+- **Personalização da Quantidade:** Define o comprimento da senha (entre 4 e 50 caracteres).
+- **Seleção de Caracteres:** Permite incluir ou excluir:
   - Números (`0-9`)
   - Caracteres especiais (`!@#$%^&*`)
   - Letras maiúsculas (`A-Z`)
   - Letras minúsculas (`a-z`)
-- Botão para **gerar senha** automaticamente.
-- Exibição da senha gerada diretamente na interface.
+- **Validação Inteligente:** Alerta o usuário caso a quantidade de caracteres solicitada exceda o total de caracteres únicos disponíveis nos tipos selecionados.
+- **Copiar para a Área de Transferência:** Botão integrado com suporte a navegadores modernos e fallback para compatibilidade em dispositivos mais antigos.
+- **Atalho de Teclado:** Pressionar `Enter` aciona o gerador de senhas.
+- **Design Responsivo:** Layout intuitivo e adaptável para telas de desktops e dispositivos móveis.
 
-## Como usar
+## 🛠️ Tecnologias Utilizadas
 
-1. Defina o número de caracteres desejado.
-2. Marque os tipos de caracteres que deseja incluir.
-3. Clique em **Gerar Senha**.
-4. A senha gerada será exibida na área designada.
+- **HTML5:** Estruturação semântica da interface.
+- **CSS3:** Estilização moderna utilizando Flexbox, Grid, gradientes e animações de transição.
+- **JavaScript (ES6+):** Lógica da aplicação, manipulação do DOM e algoritmo de embaralhamento *Fisher-Yates* para garantia de aleatoriedade e não repetição.
 
-## Tecnologias utilizadas
+## 💻 Como Usar
 
-- **HTML** para estruturação da página.
-- (Este README pode ser expandido com **CSS** e **JavaScript** caso estejam presentes em arquivos adicionais.)
-
-## Contribuições
-
-Sinta-se à vontade para abrir issues ou enviar pull requests com melhorias, correções ou novas funcionalidades.
+1. Abra o arquivo `index.html` em qualquer navegador web.
+2. Defina a quantidade de caracteres desejada para a senha.
+3. Marque os tipos de caracteres que prefere utilizar.
+4. Clique no botão **Gerar Senha** (ou pressione **Enter**).
+5. Clique no botão **Copiar** para transferir a senha diretamente para a sua área de transferência.
 
 ---
 
-## Desenvolvedor
+## 👨‍💻 Desenvolvedor
 
-Fabio Castro
+**Fabio Castro**
